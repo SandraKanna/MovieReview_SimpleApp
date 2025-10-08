@@ -8,34 +8,45 @@ section('Movies', 2);
 $pdo = pdo_pg();
 ensure_movies_table($pdo);
 
-$q      = trim($_GET['q'] ?? '');
+// first read and normalize parameters of the list to be showed
+$search      = trim($_GET['q'] ?? '');
 $genreF = trim($_GET['genre'] ?? '');
 $sort   = $_GET['sort'] ?? 'date_desc';
 
 switch ($sort) {
-  case 'date_asc':    $orderSql='watch_date ASC, id ASC'; break;
-  case 'rating_desc': $orderSql='rating DESC, id DESC';   break;
-  case 'rating_asc':  $orderSql='rating ASC, id ASC';     break;
-  default:            $orderSql='watch_date DESC, id DESC';
+  case 'date_asc':
+    $orderSql='watch_date ASC, id ASC';
+    break;
+  case 'rating_desc':
+    $orderSql='rating DESC, id DESC';
+    break;
+  case 'rating_asc':
+    $orderSql='rating ASC, id ASC';
+    break;
+  default:
+    $orderSql='watch_date DESC, id DESC';
 }
 
-$params=[]; $where=[];
-if ($q!==''){
-  $where[]='LOWER(title) LIKE :q';
-  $params[':q']='%'.mb_strtolower($q,'UTF-8').'%';
+$params=[]; // stores the real values that will replace the placeholders :q and :g
+$where=[]; // stores SQL conditions (the filters selected by the user)
+
+if ($search !==''){ // if the user submited a search query
+  $where[]='title ILIKE :q'; // case-insensitive search, taking into account accents, apostrophes, etc
+  $params[':q']='%'.$search.'%'; //store the real value of the search query, use % to search for strings that contains the query
 }
-if ($genreF!==''){
-  $where[]='genre = :g'; $params[':g']=$genreF;
+if ($genreF!==''){ // if a genre was selected in the search
+  $where[]='genre = :g'; // prepare another condition
+  $params[':g']=$genreF; // store the real value of the selected genre
 }
 
-$sql = "SELECT * FROM movie_reviews";
-if ($where){
+$sql = "SELECT * FROM movie_reviews"; // build the Structure Query Language
+if ($where){ //if there were any filters, apply them
   $sql .= " WHERE ".implode(' AND ',$where);
 }
 $sql .= " ORDER BY $orderSql";
 
-$stmt=$pdo->prepare($sql);
-$stmt->execute($params);
+$stmt=$pdo->prepare($sql); // access the DB
+$stmt->execute($params); // execute the query
 $rows=$stmt->fetchAll();
 $genres = get_genres();
 
@@ -46,7 +57,7 @@ $genres = get_genres();
     <input type="hidden" name="p" value="movies">
     <div>
       <label>Search</label>
-      <input type="text" name="q" value="<?= antiXss($q) ?>" placeholder="Title...">
+      <input type="text" name="q" value="<?= antiXss($search) ?>" placeholder="Title...">
     </div>
     <div>
       <label>Genre</label>

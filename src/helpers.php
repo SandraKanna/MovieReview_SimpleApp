@@ -65,10 +65,6 @@ function get_flashes(): array {
 }
 
 /** Utilities */
-function str_clean(string $s): string {
-	return trim($s);
-}
-
 function stars(int $n): string {
 	$n = max(1, min(5, $n));
 	return str_repeat('★', $n) . str_repeat('☆', 5-$n);
@@ -82,22 +78,24 @@ function get_genres(): array {
 /** Optional img upload */
 function upload_image(string $field = 'poster'): array {
 	$errs = [];
+	//check if the user submit an image for upload
 	if (empty($_FILES[$field]['name'])) {
 		return [null, $errs];
 	}
-
+	//chck if there has been any upload error
 	$f = $_FILES[$field];
-	if ($f['error'] !== UPLOAD_ERR_OK) {
-		if ($f['error'] !== UPLOAD_ERR_NO_FILE) {
+	if ($f['error'] !== UPLOAD_ERR_OK) { // UPLOAD_ERR_OK = 0 = everything went well
+		if ($f['error'] !== UPLOAD_ERR_NO_FILE) { // if error is other than "no file uploaded", then consider it as a real error
 			$errs[] = 'Upload error';
 		}
 		return [null, $errs];
 	}
+	//avoid big images
 	if ($f['size'] > 2*1024*1024) {
 		$errs[] = 'Image too large (max 2MB)';
 		return [null, $errs];
 	}
-
+	// accept only valid types of img files
 	$fi = finfo_open(FILEINFO_MIME_TYPE);
 	$mime = finfo_file($fi, $f['tmp_name']); finfo_close($fi);
 	$map = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp'];
@@ -105,7 +103,7 @@ function upload_image(string $field = 'poster'): array {
 		$errs[] = 'Only JPG/PNG/WebP allowed';
 		return [null, $errs];
 	}
-
+	// create the directory if it doesnt exist yet
 	$uploadDir  = __DIR__ . '/.uploads';
 	$publicBase = '/.uploads';
 	if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0775, true)) {
@@ -116,7 +114,7 @@ function upload_image(string $field = 'poster'): array {
 		$errs[]='Upload dir not writable';
 		return [null,$errs];
 	}
-
+	// generate a uniqu name to save the image
 	$name = 'img_' . bin2hex(random_bytes(6)) . '.' . $map[$mime];
 	$dest = $uploadDir . '/' . $name;
 	if (!@move_uploaded_file($f['tmp_name'], $dest)) {
@@ -127,31 +125,40 @@ function upload_image(string $field = 'poster'): array {
  	return [$publicBase.'/'.$name, $errs];
 }
 
-
 /** Validation rules and basic parsing for create/update */
 function validate_review(array $in): array {
 	$genres = get_genres();
-	$clean = [
-	'title'      => str_clean($in['title'] ?? ''),
-	'genre'      => $in['genre'] ?? '',
-	'rating'     => (int)($in['rating'] ?? 3),
-	'review'     => trim($in['review'] ?? ''),
-	'watch_date' => $in['watch_date'] ?? date('Y-m-d'),
-	];
+	$title  = filter_var(trim($in['title'] ?? ''), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $genre  = filter_var($in['genre'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $review = filter_var(trim($in['review'] ?? ''), FILTER_UNSAFE_RAW);
+    $rating = filter_var($in['rating'] ?? null, FILTER_VALIDATE_INT, [
+        'options' => ['min_range' => 1, 'max_range' => 5]
+    ]);
+    $watch  = filter_var($in['watch_date'] ?? '', FILTER_SANITIZE_STRING);
 
 	$errors = [];
-	if ($clean['title'] === '') {
+	if ($title === '' || $title === null) {
 		$errors[] = 'Title is required';
 	}
-	if (!in_array($clean['genre'],$genres,true)) {
+	if (!in_array($genre,$genres,true)) {
 		$errors[] = 'Invalid genre';
 	}
-	if ($clean['rating'] < 1 || $clean['rating'] > 5) {
-		$errors[] = 'Rating must be 1..5';
+	if ($rating === false) {
+		$errors[] = 'Rating must be an integer between 1 and 5';
 	}
-	if (!preg_match('/^\d{4}-\d{2}-\d{2}$/',$clean['watch_date'])) {
-		$errors[] = 'Invalid date';
-	}
+	// validation of date format (better than just a preg_match)
+	$dt = DateTime::createFromFormat('Y-m-d', $watch);
+    if (!$dt || $dt->format('Y-m-d') !== $watch) {
+        $errors[] = 'Invalid date format (YYYY-MM-DD expected)';
+    }
+
+	$clean = [
+        'title'      => $title,
+        'genre'      => $genre,
+        'rating'     => $rating === false ? 3 : $rating,
+        'review'     => $review,
+        'watch_date' => $watch,
+    ];
 
 	return [$clean, $errors];
 }

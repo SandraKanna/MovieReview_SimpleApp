@@ -2,6 +2,11 @@
 /* ================================================================
    form to add or edit a review (view)
    ================================================================ */
+/**
+ * @var array  $data        danta from the form (title, genre, rating, review, watch_date, image_path?)
+ * @var string $actionUrl   destination URL of the form (e.g. '?p=movie-save' o '?p=movie-save&id=123')
+ * @var string $submitLabel Text for the submit button (e.g. 'Create' / 'Update')
+ */
 
 $genres = get_genres();
 ?>
