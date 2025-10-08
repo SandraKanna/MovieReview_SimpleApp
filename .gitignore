@@ -1,0 +1,16 @@
+# .gitignore
+# Docker
+pg-data/
+uploads-data/
+logs-data/
+vendor/
+node_modules/
+.env
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# MacOS
+.DS_Store
