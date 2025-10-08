@@ -21,11 +21,16 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 .navbar a.active{font-weight:600;border-color:var(--accent)}
 
 /* ========== Panels and buttons ========== */
-.panel{background:var(--soft);border:1px solid var(--border);padding:16px;border-radius:10px;margin:16px 0}
+.panel {
+  background:var(--soft);
+  border:1px solid var(--border);
+  padding:16px;
+  border-radius:10px;
+  margin:16px 0
+}
 .success{border-color:#10b981}
 .error{border-color:#ef4444}
-/* button,.btn{appearance:none;border:none;cursor:pointer;background:var(--accent);color:#fff;padding:10px 14px;border-radius:8px;font-weight:600} */
-/* button:hover,.btn:hover{background:var(--accent-2)} */
+
 button,
 .btn {
   appearance: none;
@@ -62,7 +67,7 @@ button:hover,
 /* small buttons inside the table */
 .btn-small {
   display: block;
-  width: 70%;
+  width: 100%;
   padding: 6px 10px;
   font-size: 12px;
   min-width: 0;
@@ -72,9 +77,6 @@ button:hover,
 .form-panel{display:grid;gap:14px;max-width:680px}
 .form-panel label{display:block;font-weight:600;margin-bottom:4px}
 .form-panel input[type="text"],
-.form-panel input[type="email"],
-.form-panel input[type="number"],
-.form-panel input[type="date"],
 .form-panel select,
 .form-panel textarea{
   width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:inherit

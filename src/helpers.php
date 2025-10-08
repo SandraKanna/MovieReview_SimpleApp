@@ -57,7 +57,7 @@ function flash(string $type, string $msg): void {
 	$_SESSION['flashes'][] = ['type'=>$type,'msg'=>$msg];
 }
 
-/** get the message and deletes it */
+/** get the message from the current session and then deletes it */
 function get_flashes(): array {
 	$f = $_SESSION['flashes'] ?? [];
 	unset($_SESSION['flashes']);
@@ -74,6 +74,10 @@ function stars(int $n): string {
 	return str_repeat('★', $n) . str_repeat('☆', 5-$n);
 }
 
+/** @return list<string> */
+function get_genres(): array {
+  return ['Action','Drama','Comedy','Sci-Fi','Romance','Horror','Documentary','Animation','Other'];
+}
 
 /** Optional img upload */
 function upload_image(string $field = 'poster'): array {
@@ -102,8 +106,8 @@ function upload_image(string $field = 'poster'): array {
 		return [null, $errs];
 	}
 
-	$uploadDir  = __DIR__ . '/uploads';
-	$publicBase = '/uploads';
+	$uploadDir  = __DIR__ . '/.uploads';
+	$publicBase = '/.uploads';
 	if (!is_dir($uploadDir) && !@mkdir($uploadDir, 0775, true)) {
 		$errs[]='Upload dir cannot be created';
 		return [null,$errs];
@@ -121,4 +125,60 @@ function upload_image(string $field = 'poster'): array {
 	}
 
  	return [$publicBase.'/'.$name, $errs];
+}
+
+
+/** Validation rules and basic parsing for create/update */
+function validate_review(array $in): array {
+	$genres = get_genres();
+	$clean = [
+	'title'      => str_clean($in['title'] ?? ''),
+	'genre'      => $in['genre'] ?? '',
+	'rating'     => (int)($in['rating'] ?? 3),
+	'review'     => trim($in['review'] ?? ''),
+	'watch_date' => $in['watch_date'] ?? date('Y-m-d'),
+	];
+
+	$errors = [];
+	if ($clean['title'] === '') {
+		$errors[] = 'Title is required';
+	}
+	if (!in_array($clean['genre'],$genres,true)) {
+		$errors[] = 'Invalid genre';
+	}
+	if ($clean['rating'] < 1 || $clean['rating'] > 5) {
+		$errors[] = 'Rating must be 1..5';
+	}
+	if (!preg_match('/^\d{4}-\d{2}-\d{2}$/',$clean['watch_date'])) {
+		$errors[] = 'Invalid date';
+	}
+
+	return [$clean, $errors];
+}
+
+/** Insert or updat and return id */
+function save_review(PDO $pdo, array $data, ?int $id = null): int {
+  if ($id) {
+    $stmt = $pdo->prepare("
+      UPDATE movie_reviews
+         SET title=:t, genre=:g, rating=:r, review=:rv, watch_date=:d, image_path=:p, updated_at=NOW()
+       WHERE id=:id
+    ");
+    $stmt->execute([
+      ':t'=>$data['title'], ':g'=>$data['genre'], ':r'=>$data['rating'], ':rv'=>$data['review'],
+      ':d'=>$data['watch_date'], ':p'=>($data['image_path'] ?? null), ':id'=>$id
+    ]);
+    return $id;
+  } else {
+    $stmt = $pdo->prepare("
+      INSERT INTO movie_reviews (title, genre, rating, review, watch_date, image_path)
+      VALUES (:t, :g, :r, :rv, :d, :p)
+      RETURNING id
+    ");
+    $stmt->execute([
+      ':t'=>$data['title'], ':g'=>$data['genre'], ':r'=>$data['rating'], ':rv'=>$data['review'],
+      ':d'=>$data['watch_date'], ':p'=>($data['image_path'] ?? null)
+    ]);
+    return (int)$stmt->fetchColumn();
+  }
 }

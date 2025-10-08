@@ -7,15 +7,14 @@
 require __DIR__ . '/helpers.php';
 
 $pages = [
-  // views (include layout)
+  // views (with layout)
   'home'      => ['file' => __DIR__.'/pages/render/home.php'],
   'movies'      => ['file' => __DIR__.'/pages/render/movie-list.php'],
-  'movie-new'   => ['file' => __DIR__.'/pages/render/movie-create.php'],
-  'movie-edit'  => ['file' => __DIR__.'/pages/render/movie-update.php'],
+  'movie-new'   => ['file' => __DIR__.'/pages/render/movie-new.php'],
+  'movie-edit'  => ['file' => __DIR__.'/pages/render/movie-edit.php'],
 
   // actions (without layout)
-  'movie-create'=> ['file' => __DIR__.'/pages/actions/create.php', 'raw' => true],
-  'movie-update'=> ['file' => __DIR__.'/pages/actions/update.php', 'raw' => true],
+  'movie-save'=> ['file' => __DIR__.'/pages/actions/save.php', 'raw' => true],
   'movie-delete'=> ['file' => __DIR__.'/pages/actions/delete.php', 'raw' => true],
 ];
 

@@ -2,11 +2,7 @@
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: SAMEORIGIN');
 header("Referrer-Policy: no-referrer-when-downgrade");
-/* CSP simple: solo servimos nuestros propios recursos.
-   - script-src 'self' (sin inline)
-   - style-src 'self' (solo tu CSS)
-   - img-src 'self' data: (para <img src="data:..."> si hiciera falta)
-*/
+/* CSP simple: we serve only our resouces*/
 header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;");
 
 $cur = $_GET['p'] ?? 'home';

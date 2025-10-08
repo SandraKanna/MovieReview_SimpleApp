@@ -12,7 +12,7 @@ services:
       # Config PHP, read only
       - ./config/php-upload.ini:/usr/local/etc/php/conf.d/zzz-upload.ini:ro
       # mount separate volumes for writing data
-      - uploads-data:/var/www/html/uploads
+      - uploads-data:/var/www/html/.uploads # Mount the named volume
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
@@ -35,5 +35,5 @@ services:
       retries: 10
 
 volumes:
-  uploads-data:
-  pg-data:
+  uploads-data: # Declares the named volume --> data uploaded by user
+  pg-data: # named volumen for PostgreSQL dedicated data

@@ -1,11 +1,7 @@
 <?php
 /*  ================================================================
-	1) Movies
-	----------------------------------------------------------------
-	- list
-	- search
-	- organize
-	================================================================ */
+    Movies: list, search, sort
+    ================================================================ */
 
 section('Movies', 2);
 
@@ -24,18 +20,27 @@ switch ($sort) {
 }
 
 $params=[]; $where=[];
-if ($q!==''){ $where[]='LOWER(title) LIKE :q'; $params[':q']='%'.mb_strtolower($q,'UTF-8').'%'; }
-if ($genreF!==''){ $where[]='genre = :g'; $params[':g']=$genreF; }
+if ($q!==''){
+  $where[]='LOWER(title) LIKE :q';
+  $params[':q']='%'.mb_strtolower($q,'UTF-8').'%';
+}
+if ($genreF!==''){
+  $where[]='genre = :g'; $params[':g']=$genreF;
+}
 
 $sql = "SELECT * FROM movie_reviews";
-if ($where) $sql .= " WHERE ".implode(' AND ',$where);
+if ($where){
+  $sql .= " WHERE ".implode(' AND ',$where);
+}
 $sql .= " ORDER BY $orderSql";
 
-$stmt=$pdo->prepare($sql); $stmt->execute($params); $rows=$stmt->fetchAll();
+$stmt=$pdo->prepare($sql);
+$stmt->execute($params);
+$rows=$stmt->fetchAll();
+$genres = get_genres();
 
-$genres=['Action','Drama','Comedy','Sci-Fi','Romance','Horror','Documentary','Animation','Other'];
 ?>
-
+<!-- HTML: show the table in the browser -->
 <div class="panel">
   <form method="get" class="toolbar">
     <input type="hidden" name="p" value="movies">
