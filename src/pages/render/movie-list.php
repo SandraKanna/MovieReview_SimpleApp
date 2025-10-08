@@ -68,22 +68,22 @@ $genres=['Action','Drama','Comedy','Sci-Fi','Romance','Horror','Documentary','An
 <?php if (!$rows): ?>
   <p class="muted">No reviews yet.</p>
 <?php else: ?>
-  <table class="table-fixed">
-    <colgroup>
-      <col class="col-poster"><col class="col-title"><col class="col-genre">
-      <col class="col-rating"><col class="col-date"><col><!-- review -->
-      <col class="col-actions">
-    </colgroup>
+  <table class="movies-table">
     <thead>
       <tr>
-        <th>Poster</th><th>Title</th><th>Genre</th><th>Rating</th>
-        <th>Watch date</th><th>Review</th><th>Actions</th>
+        <th>Poster</th>
+        <th>Title</th>
+        <th>Genre</th>
+        <th>Rating</th>
+        <th>Watch date</th>
+        <th>Review</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
     <?php foreach ($rows as $r): ?>
       <tr>
-        <td>
+        <td class="col-poster">
           <?php if ($r['image_path']): ?>
             <img class="poster-thumb" src="<?= antiXss($r['image_path']) ?>" alt="">
           <?php endif; ?>
@@ -93,11 +93,11 @@ $genres=['Action','Drama','Comedy','Sci-Fi','Romance','Horror','Documentary','An
         <td><?= stars((int)$r['rating']) ?></td>
         <td><?= antiXss($r['watch_date']) ?></td>
         <td class="review"><?= nl2br(antiXss($r['review'] ?? '')) ?></td>
-        <td class="actions">
-          <a class="btn" href="?p=movie-edit&id=<?= (int)$r['id'] ?>">Edit</a>
-          <form method="post" action="?p=movie-delete" class="inline-form" data-confirm="Delete this review?">
+        <td class="col-actions">
+          <a class="btn btn-small" href="?p=movie-edit&id=<?= (int)$r['id'] ?>">Edit</a>
+          <form method="post" action="?p=movie-delete" class="delete-form" data-confirm="Delete this review?">
             <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
-            <button type="submit">Delete</button>
+            <button type="submit" class="btn btn-small">Delete</button>
           </form>
         </td>
       </tr>

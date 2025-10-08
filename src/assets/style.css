@@ -1,75 +1,125 @@
-/* ===== base ===== */
+/* ========== Base ========== */
 :root{
   --bg:#fff; --fg:#111; --muted:#666;
   --accent:#2563eb; --accent-2:#1d4ed8;
   --border:#e5e7eb; --soft:#f7f7f8;
 }
 @media (prefers-color-scheme:dark){
-  :root{
-    --bg:#0b0f14; --fg:#e5e7eb; --muted:#9aa3af;
-    --accent:#60a5fa; --accent-2:#3b82f6;
-    --border:#1f2937; --soft:#0f141b;
-  }
+  :root{ --bg:#0b0f14; --fg:#e5e7eb; --muted:#9aa3af; --accent:#60a5fa; --accent-2:#3b82f6; --border:#1f2937; --soft:#0f141b; }
 }
 *{box-sizing:border-box}
-body{margin:0; padding:24px; font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--fg)}
+body{margin:0;padding:24px;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg)}
 .container{max-width:960px;margin:0 auto}
-header,footer{margin:12px 0}
-hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 h1,h2,h3{margin:0 0 8px}
 .muted{color:var(--muted)}
+hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 
-/* ===== nav ===== */
+/* ========== Nav ========== */
 .navbar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0}
 .navbar a{color:var(--accent);text-decoration:none;padding:6px 10px;border-radius:6px;border:1px solid transparent}
 .navbar a:hover{background:var(--soft)}
 .navbar a.active{font-weight:600;border-color:var(--accent)}
 
-/* ===== panels / buttons / forms ===== */
+/* ========== Panels and buttons ========== */
 .panel{background:var(--soft);border:1px solid var(--border);padding:16px;border-radius:10px;margin:16px 0}
 .success{border-color:#10b981}
 .error{border-color:#ef4444}
-button,.btn{appearance:none;border:none;cursor:pointer;background:var(--accent);color:#fff;padding:10px 14px;border-radius:8px;font-weight:600}
-button:hover,.btn:hover{background:var(--accent-2)}
-form{display:grid;gap:14px;max-width:680px;background:var(--soft);border:1px solid var(--border);padding:18px;border-radius:12px}
-label{display:block;font-weight:600;margin-bottom:4px}
-input[type="text"],input[type="email"],input[type="number"],select,textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:inherit}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+/* button,.btn{appearance:none;border:none;cursor:pointer;background:var(--accent);color:#fff;padding:10px 14px;border-radius:8px;font-weight:600} */
+/* button:hover,.btn:hover{background:var(--accent-2)} */
+button,
+.btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.2;
+  text-align: center;
+  min-width: 90px;
+  transition: background 0.15s ease;
+}
+button:hover,
+.btn:hover {
+  background: var(--accent-2);
+}
+
+/* secondary buttons (eg: Cancel) */
+.btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.btn-secondary:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* small buttons inside the table */
+.btn-small {
+  display: block;
+  width: 70%;
+  padding: 6px 10px;
+  font-size: 12px;
+  min-width: 0;
+}
+
+/* ========== Forms ========== */
+.form-panel{display:grid;gap:14px;max-width:680px}
+.form-panel label{display:block;font-weight:600;margin-bottom:4px}
+.form-panel input[type="text"],
+.form-panel input[type="email"],
+.form-panel input[type="number"],
+.form-panel input[type="date"],
+.form-panel select,
+.form-panel textarea{
+  width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:inherit
+}
+.form-panel input:focus,
+.form-panel select:focus,
+.form-panel textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+
+/* Filters (toolbar) */
 .toolbar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
-.inline-form{display:inline}
+.toolbar label{display:block;font-weight:600;margin-bottom:4px}
+.toolbar input,.toolbar select{padding:10px;border:1px solid var(--border);border-radius:8px;background:transparent;color:inherit}
 
-/* ===== table (sólida y legible) ===== */
-table{border-collapse:collapse;width:100%}
-th,td{border:1px solid var(--border);padding:8px;vertical-align:top}
-th{background:var(--soft);text-align:left}
-.table-fixed{table-layout:fixed}
+/* ===== list of movies view ===== */
+.movies-table{ width:100%; border-collapse:collapse }
+.movies-table th,
+.movies-table td{ border:1px solid var(--border); padding:8px; vertical-align:top; text-align:left }
 
-/* columnas */
-.col-poster{width:110px}
-.col-title{width:200px}
-.col-genre{width:110px}
-.col-rating{width:110px}
-.col-date{width:120px}
-.col-actions{width:110px}
+/* fixed columns for poster and actions */
+.movies-table .col-poster{ width:120px }
+.movies-table .col-actions{ width:140px; white-space:nowrap }
 
-/* imagen poster consistente */
-.poster-thumb{width:100px;height:140px;object-fit:cover;border-radius:8px;display:block}
+/* poster adapts to the cell width */
+.poster-thumb{ display:block; max-width:100%; height:auto; border-radius:8px; object-fit:contain }
 
-/* review truncada (3 líneas) */
+/* review: 3 lines max */
 .review{
-  display:-webkit-box;
-  -webkit-line-clamp:3;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-  word-break:break-word;
-  white-space:normal;
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3;
+  overflow:hidden; word-break:break-word; white-space:normal; line-height:1.4;
+  max-width:100%;
 }
 
-/* acciones en columna */
-.actions{display:flex;flex-direction:column;gap:8px}
+/* actions column */
+.col-actions a,
+.col-actions form{ display:block; margin:0 0 8px 0 }
+.col-actions .btn-small + .btn-small { /* keeps vertical consistency */
+  margin-top: 6px;
+}
 
-/* responsive suave */
+/* neutral style for delete */
+.delete-form{ margin:0; padding:0; border:0; background:none }
+
+/* responsive */
 @media (max-width:900px){
-  .poster-thumb{width:72px;height:100px}
-  .col-title{width:160px}
+  .movies-table .col-poster{ width:100px }
+  .movies-table .col-actions{ width:120px }
 }
+

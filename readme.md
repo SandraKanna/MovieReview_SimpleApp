@@ -1,4 +1,4 @@
-# PHP Intermediate — Practice Application
+# PHP web app — MovieReview
 
 This project is the **next level** after 
 
