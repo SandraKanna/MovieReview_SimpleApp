@@ -14,7 +14,7 @@ $cur = $_GET['p'] ?? 'home';
     <title>Movie Reviews</title>
     <!-- v=2 forces css reload -->
     <link rel="stylesheet" href="/assets/style.css?v=2">
-    <!-- call to a JS script for the delte warning prompt -->
+    <!-- listener in a JS script for the delete warning prompt. Use defer to avoid blocking the page load -->
     <script src="/assets/app.js" defer></script>
   </head>
   <body>

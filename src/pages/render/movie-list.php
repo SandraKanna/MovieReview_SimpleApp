@@ -31,7 +31,7 @@ $params=[]; // stores the real values that will replace the placeholders :q and 
 $where=[]; // stores SQL conditions (the filters selected by the user)
 
 if ($search !==''){ // if the user submited a search query
-  $where[]='title ILIKE :q'; // case-insensitive search, taking into account accents, apostrophes, etc
+  $where[]='title ILIKE :q'; // ILIKE operator used with wildcard % in a WHERE clause for case-insensitive search
   $params[':q']='%'.$search.'%'; //store the real value of the search query, use % to search for strings that contains the query
 }
 if ($genreF!==''){ // if a genre was selected in the search
