@@ -15,7 +15,7 @@ $pdo = pdo_pg(); ensure_movies_table($pdo);
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $existing = null;
 
-// if there's an id then we modify an existing item, else we create a new entry
+// if there's an id then we check that the resources actually exist
 if ($id > 0) {
 	$stmt = $pdo->prepare("SELECT * FROM movie_reviews WHERE id=:id");
 	$stmt->execute([':id'=>$id]);
@@ -27,6 +27,16 @@ if ($id > 0) {
 }
 
 /* basic validation of the form's fields */
+/** 
+ * @var array{
+ *   title: string,
+ *   genre: string,
+ *   rating: int,
+ *   review: string,
+ *   watch_date: string,
+ *   image_path?: ?string
+ * } $clean
+ */
 list($clean, $valErrs) = validate_review($_POST);
 $errors = $valErrs;
 

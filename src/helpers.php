@@ -146,7 +146,7 @@ function validate_review(array $in): array {
 	if ($rating === false) {
 		$errors[] = 'Rating must be an integer between 1 and 5';
 	}
-	// validation of date format (better than just a preg_match)
+	// validation of date format with DateTime class (better than just a preg_match)
 	$dt = DateTime::createFromFormat('Y-m-d', $watch);
     if (!$dt || $dt->format('Y-m-d') !== $watch) {
         $errors[] = 'Invalid date format (YYYY-MM-DD expected)';
