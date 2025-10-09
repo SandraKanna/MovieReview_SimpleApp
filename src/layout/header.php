@@ -1,9 +1,9 @@
 <?php
-header('X-Content-Type-Options: nosniff');
-header('X-Frame-Options: SAMEORIGIN');
-header("Referrer-Policy: no-referrer-when-downgrade");
+header('X-Content-Type-Options: nosniff'); /* use exactly the MIME type specified in the request */
+header('X-Frame-Options: SAMEORIGIN'); /* avoid clickjacking, only use <iframe> in the same domain*/
+header("Referrer-Policy: no-referrer-when-downgrade"); /* do not inlcude private data/tokens/routes if not https */
 /* CSP simple: we serve only our resouces*/
-header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;");
+header("Content-Security-Policy: default-src 'selfq'; script-src 'self'; style-src 'self'; img-src 'self' data:;");
 
 $cur = $_GET['p'] ?? 'home';
 ?>
