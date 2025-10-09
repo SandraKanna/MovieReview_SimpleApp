@@ -69,8 +69,8 @@ docker compose exec db bash
 psql -U app -d appdb
 
 # Once inside the psql prompt:
-\dt                       -- list all tables (you should see "form1")
-SELECT * FROM form1;      -- view all submitted form entries
+\dt                       -- list all tables (you should see "movie_reviews")
+SELECT * FROM movie_reviews;      -- view all submitted form entries
 
 #to exit postgres:
 \q
