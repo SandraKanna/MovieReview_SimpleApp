@@ -20,38 +20,6 @@ function antiXss($s) {
 	return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-
-/** creates the connection to the DB (Postgres) and returns a PHP Data Object (PDO)*/
-function pdo_pg(): PDO {
-	$host = getenv('DB_HOST') ?: 'db';
-	$port = (int)(getenv('DB_PORT') ?: 5432);
-	$db   = getenv('DB_NAME') ?: 'appdb';
-	$user = getenv('DB_USER') ?: 'app';
-	$pass = getenv('DB_PASS') ?: 'secret';
-	$dsn  = "pgsql:host=$host;port=$port;dbname=$db";
-	return new PDO($dsn, $user, $pass, [
-	PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-	]);
-}
-
-/** Create table in DB if doesnt exist yet. It needs the PDO*/
-function ensure_movies_table(PDO $pdo): void {
-	$pdo->exec("
-	CREATE TABLE IF NOT EXISTS movie_reviews (
-		id           	SERIAL PRIMARY KEY,
-		title        	TEXT NOT NULL,
-		genre        	TEXT NOT NULL,
-		rating       	INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
-		review       	TEXT,
-		watch_date   	DATE NOT NULL,
-		image_path 	TEXT,
-		created_at   	TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-		updated_at   	TIMESTAMPTZ NOT NULL DEFAULT NOW()
-	)
-	");
-}
-
 /** store a temp message (success or error) in the current session */
 function flash(string $type, string $msg): void {
 	$_SESSION['flashes'][] = ['type'=>$type,'msg'=>$msg];
@@ -163,7 +131,38 @@ function validate_review(array $in): array {
 	return [$clean, $errors];
 }
 
-/** Insert or updat and return id */
+/** creates the connection to the DB (Postgres) and returns a PHP Data Object (PDO)*/
+function pdo_pg(): PDO {
+	$host = getenv('DB_HOST') ?: 'db';
+	$port = (int)(getenv('DB_PORT') ?: 5432);
+	$db   = getenv('DB_NAME') ?: 'appdb';
+	$user = getenv('DB_USER') ?: 'app';
+	$pass = getenv('DB_PASS') ?: 'secret';
+	$dsn  = "pgsql:host=$host;port=$port;dbname=$db";
+	return new PDO($dsn, $user, $pass, [
+		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+	]);
+}
+
+/** Create table in DB if doesnt exist yet. It needs the PDO*/
+function ensure_movies_table(PDO $pdo): void {
+	$pdo->exec("
+	CREATE TABLE IF NOT EXISTS movie_reviews (
+		id           	SERIAL PRIMARY KEY,
+		title        	TEXT NOT NULL,
+		genre        	TEXT NOT NULL,
+		rating       	INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+		review       	TEXT,
+		watch_date   	DATE NOT NULL,
+		image_path 	TEXT,
+		created_at   	TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+		updated_at   	TIMESTAMPTZ NOT NULL DEFAULT NOW()
+	)
+	");
+}
+
+/** Insert or update a review and return id */
 function save_review(PDO $pdo, array $data, ?int $id = null): int {
   if ($id) {
     $stmt = $pdo->prepare("

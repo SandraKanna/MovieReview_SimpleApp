@@ -20,7 +20,8 @@ $pages = [
 
 $current = $_GET['p'] ?? 'home';
 if (!isset($pages[$current])) {
-  http_response_code(404); $current = 'home';
+  http_response_code(404);
+  $current = 'home';
 }
 
 $meta = $pages[$current];

@@ -41,7 +41,7 @@ if ($genreF!==''){ // if a genre was selected in the search
 
 $sql = "SELECT * FROM movie_reviews"; // build the Structure Query Language
 if ($where){ //if there were any filters, apply them
-  $sql .= " WHERE ".implode(' AND ',$where);
+  $sql .= " WHERE ".implode(' AND ',$where); // takes the strings in the $where array and joins them using ' AND ' as separator
 }
 $sql .= " ORDER BY $orderSql";
 
