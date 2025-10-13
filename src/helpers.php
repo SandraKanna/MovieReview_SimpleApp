@@ -139,10 +139,16 @@ function pdo_pg(): PDO {
 	$user = getenv('DB_USER') ?: 'app';
 	$pass = getenv('DB_PASS') ?: 'secret';
 	$dsn  = "pgsql:host=$host;port=$port;dbname=$db";
-	return new PDO($dsn, $user, $pass, [
-		PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-		PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-	]);
+	try {
+		return new PDO($dsn, $user, $pass, [
+			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+			PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+		]);
+	} catch (PDOException $e) {
+		error_log('❌ DB Connection error: ' . $e->getMessage());
+		http_response_code(500);
+		exit('Database unavailable. Please try again later.');
+	}
 }
 
 /** Create table in DB if doesnt exist yet. It needs the PDO*/
