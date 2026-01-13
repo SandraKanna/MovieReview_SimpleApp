@@ -10,7 +10,7 @@ help: ## Show available targets
 
 start: ## build the image (if it doesnt exist) and launch the server
 	$(COMPOSE) up -d --build
-	@echo "✅ App running → http://localhost:8080/"
+	@echo "✅ App running → http://localhost:8000/"
 
 stop: #stop the running containers
 	$(COMPOSE) stop

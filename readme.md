@@ -1,8 +1,10 @@
 # PHP web app — MovieReview
 
-A minimal full-stack CRUD web app built with **PHP + PostgreSQL**, packaged with **Docker Compose**.
-Users can add, edit, delete and browse movies they’ve watched — including short reviews, ratings, and optional poster uploads.
+This project is a practical demonstration of a minimal full-stack CRUD web application.
 
+It builds upon previous projects covering [PHP fundamentals](https://github.com/SandraKanna/PHP-intro), [PHP forms](https://github.com/SandraKanna/PHP-form), and database integration in a [modular PHP app](https://github.com/SandraKanna/PHP-Intermediate?tab=readme-ov-file).
+
+Built with **PHP + PostgreSQL** and packaged using **Docker Compose**, the app allows users to add, edit, delete, and browse movies they’ve watched — including short reviews, ratings, and optional poster uploads.
 ---
 
 ## Overview
